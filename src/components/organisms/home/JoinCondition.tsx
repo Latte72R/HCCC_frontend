@@ -23,18 +23,7 @@ const JoinCondition: FC<JoinConditionProps> = ({ sx }) => {
             低レイヤにちょっと興味があるという方からCコンパイラ自作勢までレベル問わず広く募集します.
           </p>
           <p>
-            当日はSECCONCONイベント内のZoomで進行を行うので,参加される方は
-            <a
-              href='https://docs.google.com/forms/d/e/1FAIpQLSfqQEbgSkdRcDoYdDKHePb2VNFnkoI1hkzZgEFgJ-lgkZz4rg/viewform'
-              target='_blank'
-              rel='noreferrer'
-            >
-              応募フォーム
-            </a>
-            の入力をお願いします.
-          </p>
-          <p>
-            競技と並行して入門編をライブで行う予定ですので,自分のレベル感に合わせて解説を聞いたり競技に戻ったりして頂いて構いません．
+            競技と並行してアセンブリ言語の解説も行う予定ですので,自分のレベル感に合わせて解説を聞いたり競技に戻ったりして頂いて構いません．
             皆さんの参加をお待ちしてます.
           </p>
         </Typography>

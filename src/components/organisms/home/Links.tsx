@@ -55,7 +55,7 @@ const Links: FC<LinksProps> = ({ sx }) => {
         >
           <ul>
             <li>
-              プロジェクトのリポジトリ:　
+              プロジェクトのリポジトリ:
               <a
                 href='https://github.com/Alignof/Human_C_Compiler_Contest'
                 target='_blank'
@@ -65,23 +65,33 @@ const Links: FC<LinksProps> = ({ sx }) => {
               </a>
             </li>
             <li>
-              検証環境:　
-              <a
-                href='https://github.com/HumanCCompilerContest/HCCC_local_env'
-                target='_blank'
-                rel='noreferrer'
-              >
-                https://github.com/HumanCCompilerContest/HCCC_local_env
-              </a>
-            </li>
-            <li>
-              チュートリアル:　
+              チュートリアル:
               <a
                 href='https://github.com/Alignof/HCCC_Tutorial'
                 target='_blank'
                 rel='noreferrer'
               >
                 https://github.com/Alignof/HCCC_Tutorial
+              </a>
+            </li>
+            <li>
+              KCS HP:
+              <a
+                href='https://www.kcs1959.jp/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                https://www.kcs1959.jp/
+              </a>
+            </li>
+            <li>
+              Latte72 HP:
+              <a
+                href='https://latte72.net/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                https://latte72.net/
               </a>
             </li>
           </ul>
