@@ -63,7 +63,7 @@ const MainVisual: FC<MainVisualProps> = ({ sx }) => {
               maxWidth: '600px',
             }}
           >
-            Day: 2025 9.14 (Sun.) 00:00 〜 9.16 (Tue.) 12:00
+            Day: 2025 9.14 (Sun.) 12:00 〜 9.16 (Tue.) 12:00
           </Typography>
           <Typography
             variant='h6'

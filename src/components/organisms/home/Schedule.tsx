@@ -21,10 +21,10 @@ const Schedule: FC<ScheduleProps> = ({ sx }) => {
 
       <Box sx={{ width: { xs: '90%', md: '600px' }, m: '3rem auto' }}>
         <Typography variant='h4' align='center'>
-          2025年3月7日(土) 13:00 〜
+          2025年9月14日(日) 12:00 〜 9月16日(火) 12:00
         </Typography>
         <Typography variant='h6' sx={{ m: '2rem 0 1rem' }}>
-          人間Cコンパイラコンテストは KCS 2024 春合宿 にて開催されます.
+          人間Cコンパイラコンテストは KCS 2025 夏合宿 にて開催されます.
           このイベントに関する質問がある場合は Latte72 までお願いします．
         </Typography>
       </Box>
