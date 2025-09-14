@@ -124,6 +124,22 @@ const QandA: FC<QandAProps> = ({ sx }) => {
           >
             System V Application Binary
           </a>
+          ,{" "}
+          <a
+            href='https://github.com/Alignof/HCCC_Tutorial/'
+            target='_blank'
+            rel='noreferrer'
+          >
+            HCCCチュートリアル
+          </a>
+          ,{" "}
+          <a
+            href='https://speakerdeck.com/latte72/x86-64-assembly-essentials'
+            target='_blank'
+            rel='noreferrer'
+          >
+            x86-64 Assembly Essentials
+          </a>
           を除き禁止しています.
         </StyledAccordionDetails>
       </Accordion>
@@ -133,7 +149,7 @@ const QandA: FC<QandAProps> = ({ sx }) => {
           <HelpIcon color='secondary' sx={{ mr: '1rem' }} />
           悪意のあるコードを提出しても良いですか？
         </StyledAccordionSummary>
-        <StyledAccordionDetails>勘弁してください</StyledAccordionDetails>
+        <StyledAccordionDetails>悪意のあるコードの提出は禁止されています.</StyledAccordionDetails>
       </Accordion>
     </Box>
   )

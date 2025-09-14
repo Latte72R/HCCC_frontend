@@ -50,7 +50,7 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
 
       <Box sx={{ lineHeight: '1.5rem' }}>
         <Typography>
-          第3回大会では問題の掲載/提出を行う競技システムと手元でデバッグするための検証環境を用意して以下のような規則で実施する．
+          この大会では問題の掲載/提出を行う競技システムを用意して以下のような規則で実施する．
         </Typography>
         <Box sx={{ mb: '2rem' }}>
           <h3>A. 競技概要</h3>
@@ -64,7 +64,7 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                 変換を行わずコンパイル不可であることと最初の行数を示す．
               </li>
               <li>
-                第3回大会では以下の仕様を基準に競技を行う．
+                この大会では以下の仕様を基準に競技を行う．
                 <ol type='i'>
                   <li>
                     C言語の仕様は
@@ -102,7 +102,7 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                     </Link>
                     の仕様に従う．
                   </li>
-                  <li>対象アーキテクチャはx86_64とRISC-Vとする．</li>
+                  <li>対象アーキテクチャはx86_64とする．</li>
                   <li>記法はAT&amp;Tとintel記法の双方を許可する．</li>
                   <li>アセンブラにはGNU assemblerを使用する</li>
                 </ol>
@@ -212,8 +212,9 @@ GNU ld (GNU Binutils for Debian) 2.35.2`}</Code>
               <li>既存のコンパイラを使用すること．</li>
               <li>その他既存のツールを使用すること．</li>
               <li>コンパイラやツールを自作して使用すること．</li>
-              <li>他者と回答を共有すること．</li>
+              <li>指定されたスタッフ以外の他者と回答を共有すること．</li>
               <li>回答にジャッジサーバを攻撃するような処理を埋め込むこと．</li>
+              <li>生成AI（オンライン,ローカル問わず）を使用すること．</li>
             </ol>
           </Typography>
         </Alert>
