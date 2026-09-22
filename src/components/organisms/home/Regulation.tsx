@@ -131,9 +131,6 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                   <li>
                     誤答した場合はその問題でACしたことにより得た得点から誤答の数に応じて減点する（誤答1回に対して1点減点）．減点はACした問題にのみ適用される（マイナスの得点にはならない）．
                   </li>
-                  <li>
-                    誤答のうちコンパイルできるはずのものにコンパイルエラーを出した場合（WCとなった場合），以後は提出が不可能となる．
-                  </li>
                 </ol>
               </li>
             </ol>
@@ -172,17 +169,24 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                 REなどの場合に各エラーを競技者に表示する．
               </li>
               <li>実行の制限時間は2000msとする．</li>
-              <li>ジャッジは以下の環境で行われる．</li>
-              <Code language='shell' showLineNumbers={false}>{`$ uname -a 
-Linux 31d57f0f4274 6.5.4-arch2-1 #1 SMP PREEMPT_DYNAMIC Thu, 21 Sep 2023 11:06:39 +0000 x86\_64 GNU/Linux
-$ lld --version
-Debian GLIBC 2.31-13+deb11u6
+              <li>ジャッジは提出時に選択したアーキテクチャに応じ，以下の環境で行われる．</li>
+              <Code language='shell' showLineNumbers={false}>{`# x86-64 (Debian 13 trixie)
 $ gcc --version
-gcc (GCC) 12.2.0
+gcc (Debian 14.2.0-19) 14.2.0
 $ as --version
-GNU assembler (GNU Binutils for Debian) 2.35.2
+GNU assembler (GNU Binutils for Debian) 2.44
 $ ld --version
-GNU ld (GNU Binutils for Debian) 2.35.2`}</Code>
+GNU ld (GNU Binutils for Debian) 2.44
+$ ldd --version
+ldd (Debian GLIBC 2.41-12+deb13u4) 2.41
+
+# RISC-V (クロス GCC + QEMU user mode)
+$ riscv64-linux-gnu-gcc --version
+riscv64-linux-gnu-gcc (Debian 14.2.0-19) 14.2.0
+$ riscv64-linux-gnu-as --version
+GNU assembler (GNU Binutils for Debian) 2.44
+$ qemu-riscv64 --version
+qemu-riscv64 version 10.0.13`}</Code>
             </ol>
           </div>
         </Box>

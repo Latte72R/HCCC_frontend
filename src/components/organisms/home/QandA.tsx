@@ -58,38 +58,10 @@ const QandA: FC<QandAProps> = ({ sx }) => {
       <Accordion>
         <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
           <HelpIcon color='secondary' sx={{ mr: '1rem' }} />
-          初心者でコンパイラの知識がありませんが,参加できますか？
-        </StyledAccordionSummary>
-        <StyledAccordionDetails>
-          大歓迎です.裏番組として入門編を流す予定ですので自分のレベル感に合わせて解説を聞いたり競技に戻ったりして頂いて構いません．
-          低レイヤーに踏み出す第一歩としてご活用ください.
-        </StyledAccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <HelpIcon color='secondary' sx={{ mr: '1rem' }} />
           AT&T記法とIntel記法のどちらも使えますか?
         </StyledAccordionSummary>
         <StyledAccordionDetails>
           使えます.お好きな方で記述してください.
-        </StyledAccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <HelpIcon color='secondary' sx={{ mr: '1rem' }} />
-          詳細のルールはどこから確認できますか？
-        </StyledAccordionSummary>
-        <StyledAccordionDetails>
-          <a
-            href='https://github.com/Alignof/Human_C_Compiler_Contest'
-            target='_blank'
-            rel='noreferrer'
-          >
-            こちらのリンク
-          </a>
-          からご確認ください.
         </StyledAccordionDetails>
       </Accordion>
 

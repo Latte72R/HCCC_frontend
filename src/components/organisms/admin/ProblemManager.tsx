@@ -2,8 +2,8 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import {
-  Alert, Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
-  FormControlLabel, IconButton, MenuItem, Paper, Stack,
+  Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle,
+  IconButton, MenuItem, Paper, Stack,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TextField, Typography,
 } from '@mui/material'
@@ -61,8 +61,8 @@ export default function ProblemManager() {
         outputDesc: detail.outputDesc ?? '',
         testTarget: detail.testTarget,
         score: detail.score,
-        isWrongCode: detail.isWrongCode,
-        errorLineNumber: detail.errorLineNumber,
+        isWrongCode: false,
+        errorLineNumber: null,
         testcases: detail.testcases.length > 0
           ? detail.testcases.map((t) => ({ input: t.input ?? '', expect: t.expect ?? '' }))
           : [{ input: '', expect: '' }],
@@ -82,7 +82,8 @@ export default function ProblemManager() {
         ...input,
         inputDesc: input.inputDesc || null,
         outputDesc: input.outputDesc || null,
-        errorLineNumber: input.errorLineNumber,
+        isWrongCode: false,
+        errorLineNumber: null,
         testcases: input.testTarget === 'NoTestCase' ? [] : input.testcases,
       }
       if (editingId === null) {
@@ -132,7 +133,7 @@ export default function ProblemManager() {
         </TableRow></TableHead>
         <TableBody>{(data ?? []).map((row) => <TableRow key={row.id} hover>
           <TableCell>{row.id}</TableCell>
-          <TableCell><AppLink href={`/problems/${row.id}`}>{row.title}</AppLink>{row.isWrongCode && <Chip size='small' label='ひっかけ' sx={{ ml: 1 }} />}</TableCell>
+          <TableCell><AppLink href={`/problems/${row.id}`}>{row.title}</AppLink></TableCell>
           <TableCell>{row.testTarget}</TableCell>
           <TableCell>{row.score}</TableCell>
           <TableCell>{row.testcaseCount}</TableCell>
@@ -155,10 +156,6 @@ export default function ProblemManager() {
               {testTargets.map((v) => <MenuItem key={v} value={v}>{v}</MenuItem>)}
             </TextField>
             <TextField fullWidth type='number' label='配点' value={input.score} onChange={(e) => set('score', Number(e.target.value))} />
-          </Stack>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems='center'>
-            <FormControlLabel control={<Checkbox checked={input.isWrongCode} onChange={(e) => set('isWrongCode', e.target.checked)} />} label='ひっかけ問題（コンパイルエラーが正解）' />
-            <TextField type='number' label='エラー行番号' value={input.errorLineNumber ?? ''} onChange={(e) => set('errorLineNumber', e.target.value === '' ? null : Number(e.target.value))} disabled={!input.isWrongCode} />
           </Stack>
           <TextField fullWidth multiline minRows={4} label='問題文' value={input.statement} onChange={(e) => set('statement', e.target.value)} />
           <TextField fullWidth multiline minRows={4} label='Cコード' value={input.code} onChange={(e) => set('code', e.target.value)} sx={{ '& textarea': { fontFamily: 'monospace' } }} />

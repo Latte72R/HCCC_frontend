@@ -30,11 +30,6 @@ const Problem = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isPostLoading, setIsPostLoading] = useState(false)
 
-  const hasWCSubmission =
-    submissionListResponse?.items
-      ?.filter((v) => v.problem.id === Number(id))
-      .reduce((pv, cv) => pv || cv.result === 'WC', false) ?? false
-
   useEffect(() => {
     if (problemResponse?.status === 'login-required') {
       router.push('/login')
@@ -44,15 +39,11 @@ const Problem = () => {
 
   const onSubmit = async (data: SubmitFormSchema) => {
     setIsPostLoading(true)
-    const asm = data.isCE ? 'compile error submitted' : data.asm
 
     const param: SubmissionPost = {
-      asm: asm || '',
+      asm: data.asm || '',
       arch: data.arch,
-      isCE: data.isCE,
-    }
-    if (data.isCE && data.error_line_number != undefined) {
-      param.error_line_number = data.error_line_number
+      isCE: false,
     }
     const res = await requestSubmission(Number(id), param)
 
@@ -146,7 +137,6 @@ const Problem = () => {
           </Box>
 
           <SubmitSection
-            hasWCSubmission={hasWCSubmission}
             onSubmit={onSubmit}
             errorMessage={errorMessage}
             sx={{ m: '10rem 0' }}

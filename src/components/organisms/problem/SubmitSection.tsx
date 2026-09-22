@@ -9,26 +9,21 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  Switch,
   TextField,
-  Typography,
 } from '@mui/material'
 import type { SxProps, Theme } from '@mui/material/styles'
-import { styled } from '@mui/material/styles'
 import React, { FC, KeyboardEventHandler } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import TitleLabel from '@/components/atoms/TitleLabel'
 import { SubmitFormSchema, submitFormSchema } from '@/features/yupSchema'
 
 type SubmitSectionProps = {
-  hasWCSubmission: boolean
   errorMessage: string
   onSubmit: (data: SubmitFormSchema) => void
   sx?: SxProps<Theme>
 }
 
 const SubmitSection: FC<SubmitSectionProps> = ({
-  hasWCSubmission,
   errorMessage,
   onSubmit,
   sx,
@@ -36,14 +31,11 @@ const SubmitSection: FC<SubmitSectionProps> = ({
   const {
     register,
     handleSubmit,
-    control,
-    clearErrors,
     formState: { errors },
   } = useForm<SubmitFormSchema>({
     resolver: yupResolver(submitFormSchema),
-    defaultValues: { arch: 'x8664' },
+    defaultValues: { arch: 'x8664', isCE: false },
   })
-  const isCEChecked = useWatch({ control, name: 'isCE' })
 
   const handleKeyDown: KeyboardEventHandler<
     HTMLInputElement | HTMLTextAreaElement
@@ -75,178 +67,65 @@ const SubmitSection: FC<SubmitSectionProps> = ({
     <Box sx={sx}>
       <TitleLabel label='Submission' sx={{ mb: '2rem' }} />
 
-      {hasWCSubmission ? (
-        <Typography
-          variant='h5'
-          sx={{
-            mt: '5rem',
-            bgcolor: '#ef5350',
-            color: 'white',
-            lineHeight: '1.5',
-            fontWeight: '600',
-            p: '2rem',
-          }}
-        >
-          正しいコードに対し,コンパイルエラーが提出されました. <br />
-          この問題を再び回答することはできません.
-          <br />
-          詳細は
-          <a
-            href='https://github.com/Alignof/Human_C_Compiler_Contest'
-            target='_black'
-          >
-            レギュレーション
-          </a>
-          をご確認ください.
-        </Typography>
-      ) : (
-        <Box>
-          <Box sx={{ m: '2rem 0' }}>
-            {errorMessage && <Alert severity='error'>{errorMessage}</Alert>}
-          </Box>
-
-          <FormControlLabel
-            label='Compile Error'
-            labelPlacement='start'
-            control={
-              <StyledSwitch
-                color='error'
-                {...register('isCE', {
-                  onChange: () => {
-                    clearErrors()
-                  },
-                })}
-                sx={{
-                  ml: '1rem',
-                }}
-              />
-            }
-            sx={(theme) => ({
-              mb: '1rem',
-              '& .MuiFormControlLabel-label': {
-                fontSize: '1.5rem',
-                color: isCEChecked ? theme.palette.error.main : '',
-                fontWeight: 600,
-              },
-            })}
-          />
-
-          <Box
-            sx={{
-              mb: '1rem',
-            }}
-          >
-            <FormControlLabel
-              label='Line Number'
-              labelPlacement='start'
-              control={
-                <TextField
-                  variant='filled'
-                  size='small'
-                  type='number'
-                  hiddenLabel
-                  disabled={!isCEChecked}
-                  placeholder='line number'
-                  error={'error_line_number' in errors}
-                  helperText={errors.error_line_number?.message ?? ''}
-                  {...register('error_line_number')}
-                  sx={{
-                    ml: '4rem',
-                    width: '200px',
-                  }}
-                />
-              }
-              sx={(theme) => ({
-                mb: '1rem',
-                '& .MuiFormControlLabel-label': {
-                  fontSize: '1.2rem',
-                  color: isCEChecked ? theme.palette.error.main : '',
-                  fontWeight: 600,
-                },
-              })}
-            />
-          </Box>
-
-          <TextField
-            color='primary'
-            label='submission'
-            variant='filled'
-            rows={20}
-            multiline
-            fullWidth
-            placeholder='input assembly'
-            error={'asm' in errors}
-            helperText={errors.asm?.message ?? ''}
-            {...register('asm')}
-            InputProps={{
-              onKeyDown: handleKeyDown,
-            }}
-            disabled={isCEChecked}
-          />
-
-          <FormControl sx={{ mt: '2rem' }} error={'arch' in errors}>
-            <FormLabel>アーキテクチャ</FormLabel>
-            <RadioGroup row defaultValue='x8664'>
-              <FormControlLabel
-                value='x8664'
-                control={<Radio {...register('arch')} />}
-                label='x86-64'
-              />
-              <FormControlLabel
-                value='riscv'
-                control={<Radio {...register('arch')} />}
-                label='RISC-V'
-              />
-            </RadioGroup>
-            <FormHelperText>{errors.arch?.message ?? ''}</FormHelperText>
-          </FormControl>
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', m: '4rem' }}>
-            <Button
-              variant='contained'
-              size='large'
-              sx={(theme) => ({
-                width: '300px',
-                py: '1.2rem',
-                fontSize: '1.1rem',
-                fontWeight: '700',
-                backgroundColor: isCEChecked ? theme.palette.error.main : '',
-                '&:hover': {
-                  opacity: 0.8,
-                  backgroundColor: isCEChecked ? theme.palette.error.main : '',
-                },
-              })}
-              onClick={handleSubmit(onSubmit)}
-            >
-              {isCEChecked ? 'Compile Error' : 'Submit'}
-            </Button>
-          </Box>
+      <Box>
+        <Box sx={{ m: '2rem 0' }}>
+          {errorMessage && <Alert severity='error'>{errorMessage}</Alert>}
         </Box>
-      )}
+
+        <TextField
+          color='primary'
+          label='submission'
+          variant='filled'
+          rows={20}
+          multiline
+          fullWidth
+          placeholder='input assembly'
+          error={'asm' in errors}
+          helperText={errors.asm?.message ?? ''}
+          {...register('asm')}
+          InputProps={{
+            onKeyDown: handleKeyDown,
+          }}
+        />
+
+        <FormControl sx={{ mt: '2rem' }} error={'arch' in errors}>
+          <FormLabel>アーキテクチャ</FormLabel>
+          <RadioGroup row defaultValue='x8664'>
+            <FormControlLabel
+              value='x8664'
+              control={<Radio {...register('arch')} />}
+              label='x86-64'
+            />
+            <FormControlLabel
+              value='riscv'
+              control={<Radio {...register('arch')} />}
+              label='RISC-V'
+            />
+          </RadioGroup>
+          <FormHelperText>{errors.arch?.message ?? ''}</FormHelperText>
+        </FormControl>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', m: '4rem' }}>
+          <Button
+            variant='contained'
+            size='large'
+            sx={{
+              width: '300px',
+              py: '1.2rem',
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              '&:hover': {
+                opacity: 0.8,
+              },
+            }}
+            onClick={handleSubmit(onSubmit)}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Box>
     </Box>
   )
 }
-
-const StyledSwitch = styled(Switch)(() => ({
-  width: 80,
-  height: 45,
-  padding: 7,
-  '& .MuiSwitch-switchBase': {
-    margin: 1,
-    padding: 0,
-    transform: 'translateX(6px)',
-    '&.Mui-checked': {
-      transform: 'translateX(32px)',
-    },
-  },
-
-  '& .MuiSwitch-thumb': {
-    width: 40,
-    height: 40,
-  },
-  '& .MuiSwitch-track': {
-    borderRadius: 25,
-  },
-}))
 
 export default SubmitSection

@@ -64,14 +64,11 @@ const Problems: NextPage = () => {
     .filter((v) => v.result === 'AC')
     .map((v) => v.problem.id)
 
-  const wcSubmissionIDs = submissionListResponse.items
-    .filter((v) => v.result === 'WC')
-    .map((v) => v.problem.id)
-
   const errorSubmissionIDs = submissionListResponse.items
     .filter(
       (v) =>
         v.result === 'WA' ||
+        v.result === 'WC' ||
         v.result === 'TLE' ||
         v.result === 'RE' ||
         v.result === 'LE' ||
@@ -110,14 +107,11 @@ const Problems: NextPage = () => {
           >
             {problemListResponse.items.map((problem) => {
               const isAC = acSubmissionIDs.includes(problem.id)
-              const isWC = wcSubmissionIDs.includes(problem.id)
               const isError = errorSubmissionIDs.includes(problem.id)
               const status: ProblemCardStatus = isAC
                 ? 'ac' // ACが一つでもある問題
-                : isWC
-                ? 'wc' // ACが無く、WCがある問題
                 : isError
-                ? 'error' // AC, WCが無く、その他エラーが起きた問題
+                ? 'error' // ACが無く、エラーがある問題
                 : 'notSolved'
               return (
                 <ProblemCard
