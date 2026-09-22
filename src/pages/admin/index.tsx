@@ -116,7 +116,7 @@ export default function AdminPage() {
   }
 
   const rows = useMemo(() => data?.recentSubmissions.filter((row) => {
-    const matchesQuery = `${row.id} ${row.userName} ${row.problemTitle}`
+    const matchesQuery = `${row.id} ${row.userName} ${row.problemId} ${row.problemTitle}`
       .toLocaleLowerCase().includes(query.toLocaleLowerCase())
     const matchesFilter = filter === 'all' ||
       (filter === 'pending' && row.result === 'Pending') ||
@@ -182,7 +182,7 @@ export default function AdminPage() {
             <TableContainer><Table size='small'>
               <TableHead sx={{ bgcolor: '#f6f8fb' }}><TableRow><TableCell>ID</TableCell><TableCell>参加者</TableCell><TableCell>問題</TableCell><TableCell>判定</TableCell><TableCell>提出日時</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
               <TableBody>{rows.map((row) => <TableRow key={row.id} hover>
-                <TableCell><AppLink href={`/submissions/${row.id}`}>#{row.id}</AppLink></TableCell><TableCell>{row.userName}</TableCell><TableCell>{row.problemTitle}</TableCell>
+                <TableCell><AppLink href={`/submissions/${row.id}`}>#{row.id}</AppLink></TableCell><TableCell>{row.userName}</TableCell><TableCell><AppLink href={`/problems/${row.problemId}`}>#{row.problemId} {row.problemTitle}</AppLink></TableCell>
                 <TableCell><Chip size='small' label={row.result} color={row.result === 'AC' ? 'success' : row.result === 'Pending' ? 'warning' : 'default'} /></TableCell>
                 <TableCell>{new Date(row.submittedAt).toLocaleString('ja-JP')}</TableCell>
                 <TableCell><Button size='small' onClick={() => openEditor(row)}>判定を修正</Button></TableCell>

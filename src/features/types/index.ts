@@ -27,6 +27,7 @@ export type AdminOverview = {
   recentSubmissions: {
     id: number
     userName: string
+    problemId: number
     problemTitle: string
     result: string
     errorMessage: string
