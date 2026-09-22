@@ -17,6 +17,7 @@ export default function handler(
         asm: 'stop',
         result: 'AC',
         isCE: false,
+        arch: 'x8664',
         error_message: '',
         user: {
           id: 1,

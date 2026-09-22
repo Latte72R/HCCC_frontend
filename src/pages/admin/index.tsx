@@ -5,13 +5,14 @@ import {
   Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   InputAdornment, MenuItem, Paper, Skeleton, Stack,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TextField, Typography,
+  Tabs, Tab, TextField, Typography,
 } from '@mui/material'
 import Head from 'next/head'
 import { useMemo, useState } from 'react'
 
 import AppLink from '@/components/atoms/AppLink'
 import { useAuthContext } from '@/components/contexts/AuthProvider'
+import ProblemManager from '@/components/organisms/admin/ProblemManager'
 import BasicLayout from '@/components/templates/BasicLayout'
 import { correctAdminJudgement, updateContestPeriod, useAdminOverview, useContestPeriod } from '@/features/api'
 import { AdminOverview } from '@/features/types'
@@ -36,6 +37,7 @@ const metricLabels = [
 export default function AdminPage() {
   const { user, isAdmin } = useAuthContext()
   const { data, error, isLoading, refresh } = useAdminOverview()
+  const [tab, setTab] = useState(0)
   const { data: period, refresh: refreshPeriod } = useContestPeriod()
   const [beginInput, setBeginInput] = useState('')
   const [endInput, setEndInput] = useState('')
@@ -134,6 +136,11 @@ export default function AdminPage() {
         {user && !isAdmin && <Alert severity='warning'>このアカウントには管理権限がありません。</Alert>}
         {user && isAdmin && <>
           {error && <Alert severity='error' sx={{ mb: 3 }}>データを取得できませんでした。接続と API の設定を確認してください。</Alert>}
+          <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 3 }}>
+            <Tab label='判定・概要' />
+            <Tab label='問題管理' />
+          </Tabs>
+          {tab === 0 && <>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }, gap: 2, mb: 4 }}>
             {metricLabels.map(([key, label, unit]) => <Paper key={key} variant='outlined' sx={{ p: 2.5, borderRadius: 3, bgcolor: key === 'pending' ? '#fff8ec' : 'background.paper' }}>
               <Typography variant='body2' color='text.secondary'>{label}</Typography>
@@ -175,6 +182,8 @@ export default function AdminPage() {
             </Table></TableContainer>
             {!isLoading && rows.length === 0 && <Typography color='text.secondary' align='center' sx={{ p: 4 }}>該当する提出はありません。</Typography>}
           </Paper>
+          </>}
+          {tab === 1 && <ProblemManager />}
           <Dialog open={Boolean(editing)} onClose={() => !saving && setEditing(null)} fullWidth maxWidth='sm'>
             <DialogTitle>提出 #{editing?.id} の判定を修正</DialogTitle>
             <DialogContent>

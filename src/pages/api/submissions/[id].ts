@@ -16,6 +16,7 @@ export default function handler(
       result: 'AC',
       error_message: '',
       isCE: false,
+      arch: 'x8664',
       user: {
         id: 1,
         name: 'hoge',

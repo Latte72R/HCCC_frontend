@@ -39,6 +39,48 @@ export type ContestPeriod = {
   end: string
 }
 
+export type AdminTestcase = {
+  id: number
+  input: string | null
+  expect: string | null
+}
+
+export type AdminProblem = {
+  id: number
+  title: string
+  testTarget: string
+  score: number
+  isWrongCode: boolean
+  testcaseCount: number
+}
+
+export type AdminProblemDetail = {
+  id: number
+  title: string
+  statement: string
+  code: string
+  inputDesc: string | null
+  outputDesc: string | null
+  testTarget: string
+  score: number
+  isWrongCode: boolean
+  errorLineNumber: number | null
+  testcases: AdminTestcase[]
+}
+
+export type ProblemInput = {
+  title: string
+  statement: string
+  code: string
+  inputDesc: string | null
+  outputDesc: string | null
+  testTarget: string
+  score: number
+  isWrongCode: boolean
+  errorLineNumber: number | null
+  testcases: { input: string | null; expect: string | null }[]
+}
+
 export type Problem = {
   id: number
   title: string
@@ -75,6 +117,7 @@ export type Submission = {
   error_message: string
   isCE: boolean
   error_line_number?: number | null
+  arch: string
 }
 
 export type SubmissionJoined = Submission & {
@@ -92,6 +135,7 @@ export type SubmissionJoinedUserListResponse = ResponseBase & {
 
 export type SubmissionPost = {
   asm: string
+  arch: string
   isCE: boolean
   error_line_number?: number
 }

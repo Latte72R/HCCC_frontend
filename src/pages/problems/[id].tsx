@@ -48,6 +48,7 @@ const Problem = () => {
 
     const param: SubmissionPost = {
       asm: asm || '',
+      arch: data.arch,
       isCE: data.isCE,
     }
     if (data.isCE && data.error_line_number != undefined) {

@@ -3,6 +3,7 @@ import * as yup from 'yup'
 export const submitFormSchema = yup
   .object({
     isCE: yup.boolean().required(),
+    arch: yup.string().oneOf(['x8664', 'riscv']).required('アーキテクチャを選択してください'),
     asm: yup.string().when('isCE', {
       is: (isCE: boolean) => isCE === false,
       then: (schema) => schema.required('この項目は必須です'),

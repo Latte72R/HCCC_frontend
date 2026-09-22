@@ -3,7 +3,12 @@ import {
   Alert,
   Box,
   Button,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  Radio,
+  RadioGroup,
   Switch,
   TextField,
   Typography,
@@ -36,6 +41,7 @@ const SubmitSection: FC<SubmitSectionProps> = ({
     formState: { errors },
   } = useForm<SubmitFormSchema>({
     resolver: yupResolver(submitFormSchema),
+    defaultValues: { arch: 'x8664' },
   })
   const isCEChecked = useWatch({ control, name: 'isCE' })
 
@@ -177,6 +183,23 @@ const SubmitSection: FC<SubmitSectionProps> = ({
             }}
             disabled={isCEChecked}
           />
+
+          <FormControl sx={{ mt: '2rem' }} error={'arch' in errors}>
+            <FormLabel>アーキテクチャ</FormLabel>
+            <RadioGroup row defaultValue='x8664'>
+              <FormControlLabel
+                value='x8664'
+                control={<Radio {...register('arch')} />}
+                label='x86-64'
+              />
+              <FormControlLabel
+                value='riscv'
+                control={<Radio {...register('arch')} />}
+                label='RISC-V'
+              />
+            </RadioGroup>
+            <FormHelperText>{errors.arch?.message ?? ''}</FormHelperText>
+          </FormControl>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', m: '4rem' }}>
             <Button

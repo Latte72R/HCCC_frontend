@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+import Chip from '@mui/material/Chip'
 import { tableCellClasses } from '@mui/material/TableCell'
 import { styled } from '@mui/material/styles'
 import { FC } from 'react'
@@ -24,10 +25,11 @@ const SubmissionsTable: FC<SubmissionsTableProps> = ({ submissionList }) => {
     <TableContainer component={Paper} sx={{ m: '3rem 0' }}>
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
-          <StyledTableRow>
-            <StyledTableCell align='left'>DateTime</StyledTableCell>
-            <StyledTableCell align='right'>Name</StyledTableCell>
-            <StyledTableCell align='right'>User</StyledTableCell>
+            <StyledTableRow>
+              <StyledTableCell align='left'>DateTime</StyledTableCell>
+              <StyledTableCell align='right'>Name</StyledTableCell>
+              <StyledTableCell align='right'>Arch</StyledTableCell>
+              <StyledTableCell align='right'>User</StyledTableCell>
             <StyledTableCell align='right'>Score</StyledTableCell>
             <StyledTableCell align='right'>Result</StyledTableCell>
             <StyledTableCell align='right'></StyledTableCell>
@@ -41,6 +43,9 @@ const SubmissionsTable: FC<SubmissionsTableProps> = ({ submissionList }) => {
               </StyledTableCell>
               <StyledTableCell align='right'>
                 {row.problem.title}
+              </StyledTableCell>
+              <StyledTableCell align='right'>
+                <Chip size='small' label={row.arch === 'riscv' ? 'RISC-V' : 'x86-64'} />
               </StyledTableCell>
               <StyledTableCell align='right'>{row.user.name}</StyledTableCell>
               <StyledTableCell align='right'>

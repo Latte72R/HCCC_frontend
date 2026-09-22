@@ -14,6 +14,9 @@ import {
   SubmissionJoinedUserListResponse,
   AdminOverview,
   ContestPeriod,
+  AdminProblem,
+  AdminProblemDetail,
+  ProblemInput,
 } from '@/features/types'
 
 const Fetcher = async (path: string, options?: RequestInit): Promise<any> => {
@@ -95,6 +98,37 @@ export const updateContestPeriod = async (
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ begin, end }),
 })
+
+export const useAdminProblems = () => {
+  const { data, error, isLoading, mutate } = useSWR<AdminProblem[], NetworkError>(
+    '/api/admin/problems',
+    Fetcher,
+  )
+  return { data, error, isLoading, refresh: mutate }
+}
+
+export const getAdminProblem = (id: number): Promise<AdminProblemDetail> =>
+  Fetcher(`/api/admin/problems/${id}`)
+
+export const createAdminProblem = async (
+  input: ProblemInput,
+): Promise<{ status: string; id: number }> => Fetcher('/api/admin/problems', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(input),
+})
+
+export const updateAdminProblem = async (
+  id: number,
+  input: ProblemInput,
+): Promise<ResponseBase> => Fetcher(`/api/admin/problems/${id}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(input),
+})
+
+export const deleteAdminProblem = async (id: number): Promise<ResponseBase> =>
+  Fetcher(`/api/admin/problems/${id}`, { method: 'DELETE' })
 
 export const useProblemList = () => {
   const { data, error } = useSWR<ProblemListResponse, NetworkError>(

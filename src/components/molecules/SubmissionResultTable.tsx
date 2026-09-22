@@ -59,6 +59,14 @@ const SubmissionResultTable: FC<SubmissionResultTableProps> = ({
           </StyledTableRow>
           <StyledTableRow>
             <StyledTableCell component='th' align='center' variant='head'>
+              Arch
+            </StyledTableCell>
+            <StyledTableCell align='center'>
+              {submission.arch === 'riscv' ? 'RISC-V' : 'x86-64'}
+            </StyledTableCell>
+          </StyledTableRow>
+          <StyledTableRow>
+            <StyledTableCell component='th' align='center' variant='head'>
               DateTime
             </StyledTableCell>
             <StyledTableCell align='center'>
