@@ -34,6 +34,11 @@ export type AdminOverview = {
   }[]
 }
 
+export type ContestPeriod = {
+  begin: string
+  end: string
+}
+
 export type Problem = {
   id: number
   title: string

@@ -3,8 +3,8 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import type { SxProps, Theme } from '@mui/material/styles'
-import Link from 'next/link'
 import { FC } from 'react'
+import AppLink from '@/components/atoms/AppLink'
 import { Problem, ProblemCardStatus } from '@/features/types'
 
 type ProblemCardProps = {
@@ -35,12 +35,12 @@ const ProblemCard: FC<ProblemCardProps> = ({ problem, status, sx }) => {
       }}
     >
       <CardActionArea>
-        <Link href={`/problems/${problem.id}`}>
+        <AppLink href={`/problems/${problem.id}`} sx={{ display: 'block' }}>
           <CardContent>
             <Typography sx={{ m: '0.5rem 0 1rem' }}>{problem.title}</Typography>
             <Typography>{problem.score}</Typography>
           </CardContent>
-        </Link>
+        </AppLink>
       </CardActionArea>
     </Card>
   )

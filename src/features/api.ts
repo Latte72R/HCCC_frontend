@@ -13,6 +13,7 @@ import {
   SubmissionJoinedUserResponse,
   SubmissionJoinedUserListResponse,
   AdminOverview,
+  ContestPeriod,
 } from '@/features/types'
 
 const Fetcher = async (path: string, options?: RequestInit): Promise<any> => {
@@ -76,6 +77,23 @@ export const correctAdminJudgement = async (
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ result, errorMessage }),
+})
+
+export const useContestPeriod = () => {
+  const { data, error, isLoading, mutate } = useSWR<ContestPeriod, NetworkError>(
+    '/api/admin/contest',
+    Fetcher,
+  )
+  return { data, error, isLoading, refresh: mutate }
+}
+
+export const updateContestPeriod = async (
+  begin: string,
+  end: string,
+): Promise<ResponseBase> => Fetcher('/api/admin/contest', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ begin, end }),
 })
 
 export const useProblemList = () => {

@@ -8,16 +8,22 @@ import {
   TextField, Typography,
 } from '@mui/material'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
+import AppLink from '@/components/atoms/AppLink'
 import { useAuthContext } from '@/components/contexts/AuthProvider'
 import BasicLayout from '@/components/templates/BasicLayout'
-import { correctAdminJudgement, useAdminOverview } from '@/features/api'
+import { correctAdminJudgement, updateContestPeriod, useAdminOverview, useContestPeriod } from '@/features/api'
 import { AdminOverview } from '@/features/types'
 
 type RecentSubmission = AdminOverview['recentSubmissions'][number]
 const results = ['AC', 'WA', 'WC', 'AE', 'LE', 'RE', 'TLE', 'Pending', 'SystemError']
+
+const toLocalInputValue = (rfc3339: string) => {
+  const date = new Date(rfc3339)
+  const pad = (value: number) => String(value).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
 
 const metricLabels = [
   ['users', '参加者', '人'],
@@ -30,6 +36,12 @@ const metricLabels = [
 export default function AdminPage() {
   const { user, isAdmin } = useAuthContext()
   const { data, error, isLoading, refresh } = useAdminOverview()
+  const { data: period, refresh: refreshPeriod } = useContestPeriod()
+  const [beginInput, setBeginInput] = useState('')
+  const [endInput, setEndInput] = useState('')
+  const [periodError, setPeriodError] = useState('')
+  const [periodSaving, setPeriodSaving] = useState(false)
+  const [periodSaved, setPeriodSaved] = useState(false)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'pending' | 'error'>('all')
   const [editing, setEditing] = useState<RecentSubmission | null>(null)
@@ -43,6 +55,40 @@ export default function AdminPage() {
     setResult(row.result)
     setErrorMessage(row.errorMessage)
     setSaveError('')
+  }
+
+  const refreshPeriodAndOverview = async () => {
+    await Promise.all([refreshPeriod(), refresh()])
+  }
+
+  const beginValue = beginInput || (period ? toLocalInputValue(period.begin) : '')
+  const endValue = endInput || (period ? toLocalInputValue(period.end) : '')
+
+  const savePeriod = async () => {
+    setPeriodSaving(true)
+    setPeriodError('')
+    setPeriodSaved(false)
+    try {
+      const begin = new Date(beginValue)
+      const end = new Date(endValue)
+      if (Number.isNaN(begin.getTime()) || Number.isNaN(end.getTime())) {
+        setPeriodError('開始・終了の日時を入力してください。')
+        return
+      }
+      if (begin >= end) {
+        setPeriodError('終了は開始より後にしてください。')
+        return
+      }
+      await updateContestPeriod(begin.toISOString(), end.toISOString())
+      await refreshPeriodAndOverview()
+      setBeginInput(toLocalInputValue(begin.toISOString()))
+      setEndInput(toLocalInputValue(end.toISOString()))
+      setPeriodSaved(true)
+    } catch {
+      setPeriodError('保存できませんでした。権限または接続を確認してください。')
+    } finally {
+      setPeriodSaving(false)
+    }
   }
 
   const saveCorrection = async () => {
@@ -84,7 +130,7 @@ export default function AdminPage() {
           {isAdmin && <Button variant='outlined' startIcon={<RefreshIcon />} onClick={() => refresh()} sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}>更新する</Button>}
         </Stack>
 
-        {!user && <Alert severity='info'>管理画面を見るには<Link href='/login'>ログイン</Link>してください。</Alert>}
+        {!user && <Alert severity='info'>管理画面を見るには<AppLink href='/login'>ログイン</AppLink>してください。</Alert>}
         {user && !isAdmin && <Alert severity='warning'>このアカウントには管理権限がありません。</Alert>}
         {user && isAdmin && <>
           {error && <Alert severity='error' sx={{ mb: 3 }}>データを取得できませんでした。接続と API の設定を確認してください。</Alert>}
@@ -94,6 +140,21 @@ export default function AdminPage() {
               <Typography variant='h4' fontWeight={800} sx={{ mt: 1 }}>{isLoading ? <Skeleton width={70} /> : data?.[key] ?? '—'}<Typography component='span' variant='body2' sx={{ ml: 0.5 }}>{unit}</Typography></Typography>
             </Paper>)}
           </Box>
+
+          <Paper variant='outlined' sx={{ p: 3, borderRadius: 3, mb: 4 }}>
+            <Typography variant='h6' fontWeight={700}>大会期間</Typography>
+            <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+              現在: {period ? `${new Date(period.begin).toLocaleString('ja-JP')} 〜 ${new Date(period.end).toLocaleString('ja-JP')}` : '取得中…'}
+             （問題公開・提出制限の判定に使われます）
+            </Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'flex-end' }}>
+              <TextField size='small' type='datetime-local' label='開始' value={beginValue} onChange={(event) => setBeginInput(event.target.value)} InputLabelProps={{ shrink: true }} />
+              <TextField size='small' type='datetime-local' label='終了' value={endValue} onChange={(event) => setEndInput(event.target.value)} InputLabelProps={{ shrink: true }} />
+              <Button variant='contained' disabled={periodSaving} onClick={savePeriod}>期間を保存</Button>
+            </Stack>
+            {periodError && <Alert severity='error' sx={{ mt: 2 }}>{periodError}</Alert>}
+            {periodSaved && <Alert severity='success' sx={{ mt: 2 }}>大会期間を更新しました。</Alert>}
+          </Paper>
 
           <Paper variant='outlined' sx={{ borderRadius: 3, overflow: 'hidden' }}>
             <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
@@ -106,7 +167,7 @@ export default function AdminPage() {
             <TableContainer><Table size='small'>
               <TableHead sx={{ bgcolor: '#f6f8fb' }}><TableRow><TableCell>ID</TableCell><TableCell>参加者</TableCell><TableCell>問題</TableCell><TableCell>判定</TableCell><TableCell>提出日時</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
               <TableBody>{rows.map((row) => <TableRow key={row.id} hover>
-                <TableCell><Link href={`/submissions/${row.id}`}>#{row.id}</Link></TableCell><TableCell>{row.userName}</TableCell><TableCell>{row.problemTitle}</TableCell>
+                <TableCell><AppLink href={`/submissions/${row.id}`}>#{row.id}</AppLink></TableCell><TableCell>{row.userName}</TableCell><TableCell>{row.problemTitle}</TableCell>
                 <TableCell><Chip size='small' label={row.result} color={row.result === 'AC' ? 'success' : row.result === 'Pending' ? 'warning' : 'default'} /></TableCell>
                 <TableCell>{new Date(row.submittedAt).toLocaleString('ja-JP')}</TableCell>
                 <TableCell><Button size='small' onClick={() => openEditor(row)}>判定を修正</Button></TableCell>
