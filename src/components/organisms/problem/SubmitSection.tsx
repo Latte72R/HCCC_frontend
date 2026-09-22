@@ -86,6 +86,7 @@ const SubmitSection: FC<SubmitSectionProps> = ({
           InputProps={{
             onKeyDown: handleKeyDown,
           }}
+          sx={{ '& textarea': { fontFamily: 'monospace' } }}
         />
 
         <FormControl sx={{ mt: '2rem' }} error={'arch' in errors}>
