@@ -9,12 +9,11 @@ import Loading from '@/components/atoms/Loading'
 import TextWithIcon from '@/components/atoms/TextWithIcon'
 import RankingTable from '@/components/molecules/RankingTable'
 import BasicLayout from '@/components/templates/BasicLayout'
-import { useRanking } from '@/features/api'
-
-const CONTEST_END_DATE = new Date(process.env.NEXT_PUBLIC_CONTEST_END || '')
+import { useRanking, usePublicContestPeriod } from '@/features/api'
 
 const Ranking: NextPage = () => {
   const { rankingResponse, isError } = useRanking()
+  const { end } = usePublicContestPeriod()
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
@@ -55,7 +54,7 @@ const Ranking: NextPage = () => {
           </Typography>
         </TextWithIcon>
 
-        {now > CONTEST_END_DATE && (
+        {now > end && (
           <Alert severity='info' sx={{ m: '2rem 0' }}>
             コンテストは終了しました。
           </Alert>

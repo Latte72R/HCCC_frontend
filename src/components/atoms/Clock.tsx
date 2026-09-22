@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/material'
 import { grey } from '@mui/material/colors'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { usePublicContestPeriod } from '@/features/api'
 import { equalDateTime, formatDate, formatMillSeconds } from '@/features/utils'
 
 type ContestTimeKind = 'before' | 'just-before' | 'in-session' | 'after'
@@ -28,8 +29,7 @@ const judgeContestTimeKind = (
 const Clock = () => {
   const [nowDate, setNowDate] = useState(new Date())
 
-  const contestBeginDate = useMemo(() => new Date(process.env.NEXT_PUBLIC_CONTEST_BEGIN || ''), [])
-  const contestEndDate = useMemo(() => new Date(process.env.NEXT_PUBLIC_CONTEST_END || ''), [])
+  const { begin: contestBeginDate, end: contestEndDate } = usePublicContestPeriod()
   const contestTimeKind = judgeContestTimeKind(
     nowDate,
     contestBeginDate,

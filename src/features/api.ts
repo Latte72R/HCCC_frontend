@@ -90,6 +90,21 @@ export const useContestPeriod = () => {
   return { data, error, isLoading, refresh: mutate }
 }
 
+/** Public contest schedule (no login required). Falls back to build-time env. */
+export const usePublicContestPeriod = () => {
+  const { data, error } = useSWR<ContestPeriod, NetworkError>(
+    '/api/contest/period',
+    Fetcher,
+  )
+  const begin = data?.begin || process.env.NEXT_PUBLIC_CONTEST_BEGIN || ''
+  const end = data?.end || process.env.NEXT_PUBLIC_CONTEST_END || ''
+  return {
+    begin: new Date(begin),
+    end: new Date(end),
+    isLoading: !error && !data,
+  }
+}
+
 export const updateContestPeriod = async (
   begin: string,
   end: string,
