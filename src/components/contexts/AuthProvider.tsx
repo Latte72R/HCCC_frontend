@@ -8,16 +8,17 @@ import { User } from '@/features/types'
 
 export type AuthContextType = {
   user?: User
+  isAdmin: boolean
 }
 
 type AuthProviderProps = {
   children?: ReactNode
 }
 
-const AuthContext = createContext<AuthContextType>({})
+const AuthContext = createContext<AuthContextType>({ isAdmin: false })
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const { user, isLoading, isError } = useAuth()
+  const { user, isAdmin, isLoading, isError } = useAuth()
 
   if (isError) {
     if (isError.status === UNEXPECTED_NETWORK_ERROR_STATUS) {
@@ -39,7 +40,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isAdmin }}>{children}</AuthContext.Provider>
   )
 }
 

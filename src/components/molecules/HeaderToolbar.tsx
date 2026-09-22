@@ -1,4 +1,5 @@
 import CreateIcon from '@mui/icons-material/Create'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import DoneIcon from '@mui/icons-material/Done'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
 import LoginIcon from '@mui/icons-material/Login'
@@ -35,7 +36,7 @@ type HeaderToolbarProps = {
 const HeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
   const router = useRouter()
   const { mutate } = useSWRConfig()
-  const { user } = useAuthContext()
+  const { user, isAdmin } = useAuthContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -67,7 +68,7 @@ const HeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
         href='/'
         iconReactNode={
           <IconButton size='large' sx={{ m: '0 0.5rem 0 1rem' }} disabled>
-            <Image src='/HCCC_logo.png' layout='fill' alt='HCCC Logo' />
+            <Image src='/HCCC_logo.png' width={40} height={40} alt='HCCC Logo' />
           </IconButton>
         }
         sx={{ mr: '3rem' }}
@@ -144,6 +145,8 @@ const HeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
       </LinkWithIcon>
 
       <Box sx={{ flexGrow: 1 }} />
+
+      {isAdmin && <LinkWithIcon href='/admin' iconReactNode={<AdminPanelSettingsIcon />} sx={{ mr: '1rem' }}>管理画面</LinkWithIcon>}
 
       {user ? (
         <>

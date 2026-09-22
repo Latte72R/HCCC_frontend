@@ -15,6 +15,23 @@ export type User = {
 
 export type UserResponse = ResponseBase & {
   user?: User
+  isAdmin?: boolean
+}
+
+export type AdminOverview = {
+  users: number
+  problems: number
+  submissions: number
+  pending: number
+  accepted: number
+  recentSubmissions: {
+    id: number
+    userName: string
+    problemTitle: string
+    result: string
+    errorMessage: string
+    submittedAt: string
+  }[]
 }
 
 export type Problem = {

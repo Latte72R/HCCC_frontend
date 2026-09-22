@@ -12,12 +12,13 @@ import {
   SubmissionPost,
   SubmissionJoinedUserResponse,
   SubmissionJoinedUserListResponse,
+  AdminOverview,
 } from '@/features/types'
 
 const Fetcher = async (path: string, options?: RequestInit): Promise<any> => {
   let res
   try {
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`, {
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || '/api/backend'}${path}`, {
       ...options,
       credentials: 'include',
     })
@@ -57,6 +58,25 @@ export const useMe = () => {
     isError: error,
   }
 }
+
+export const useAdminOverview = () => {
+  const { data, error, isLoading, mutate } = useSWR<AdminOverview, NetworkError>(
+    '/api/admin/overview',
+    Fetcher,
+    { refreshInterval: 15000 },
+  )
+  return { data, error, isLoading, refresh: mutate }
+}
+
+export const correctAdminJudgement = async (
+  id: number,
+  result: string,
+  errorMessage: string,
+): Promise<ResponseBase> => Fetcher(`/api/admin/submissions/${id}/judgement`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ result, errorMessage }),
+})
 
 export const useProblemList = () => {
   const { data, error } = useSWR<ProblemListResponse, NetworkError>(

@@ -26,7 +26,7 @@ const useAuth = (redirectTo = '/login') => {
     setIsLoading(false)
   }, [userResponse, userResponse?.user, redirectTo])
 
-  return { user: userResponse?.user, isLoading, isError }
+  return { user: userResponse?.user, isAdmin: userResponse?.isAdmin ?? false, isLoading, isError }
 }
 
 export default useAuth

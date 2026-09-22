@@ -1,5 +1,6 @@
 import { Done } from '@mui/icons-material'
 import CreateIcon from '@mui/icons-material/Create'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
 import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -30,7 +31,7 @@ type HeaderToolbarProps = {
 const MobileHeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
   const router = useRouter()
   const { mutate } = useSWRConfig()
-  const { user } = useAuthContext()
+  const { user, isAdmin } = useAuthContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +61,7 @@ const MobileHeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
         href='/'
         iconReactNode={
           <IconButton size='large' sx={{ m: '0 0.5rem 0 1rem' }} disabled>
-            <Image src='/HCCC_logo.png' layout='fill' alt='HCCC Logo' />
+            <Image src='/HCCC_logo.png' width={40} height={40} alt='HCCC Logo' />
           </IconButton>
         }
         sx={{ mr: '3rem' }}
@@ -103,6 +104,7 @@ const MobileHeaderToolbar: FC<HeaderToolbarProps> = ({ sx }) => {
       </IconButton>
 
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
+        {isAdmin && <MenuItem><StyledLinkWithIcon href='/admin' iconReactNode={<AdminPanelSettingsIcon />}>管理画面</StyledLinkWithIcon></MenuItem>}
         <MenuItem>
           <StyledLinkWithIcon href='/ranking' iconReactNode={<StarIcon />}>
             Ranking

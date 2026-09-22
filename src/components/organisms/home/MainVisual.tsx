@@ -33,8 +33,8 @@ const MainVisual: FC<MainVisualProps> = ({ sx }) => {
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Image
             src='/HCCC_logo.png'
-            width='200px'
-            height='200px'
+            width={200}
+            height={200}
             alt='HCCC Logo'
           />
         </Box>

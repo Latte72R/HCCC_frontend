@@ -11,7 +11,7 @@ import {
 import type { SxProps, Theme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import React, { FC, KeyboardEventHandler } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import TitleLabel from '@/components/atoms/TitleLabel'
 import { SubmitFormSchema, submitFormSchema } from '@/features/yupSchema'
 
@@ -31,13 +31,13 @@ const SubmitSection: FC<SubmitSectionProps> = ({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     clearErrors,
     formState: { errors },
   } = useForm<SubmitFormSchema>({
     resolver: yupResolver(submitFormSchema),
   })
-  const isCEChecked = watch('isCE')
+  const isCEChecked = useWatch({ control, name: 'isCE' })
 
   const handleKeyDown: KeyboardEventHandler<
     HTMLInputElement | HTMLTextAreaElement

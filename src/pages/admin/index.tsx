@@ -1,0 +1,133 @@
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import SearchIcon from '@mui/icons-material/Search'
+import {
+  Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
+  InputAdornment, MenuItem, Paper, Skeleton, Stack,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TextField, Typography,
+} from '@mui/material'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
+
+import { useAuthContext } from '@/components/contexts/AuthProvider'
+import BasicLayout from '@/components/templates/BasicLayout'
+import { correctAdminJudgement, useAdminOverview } from '@/features/api'
+import { AdminOverview } from '@/features/types'
+
+type RecentSubmission = AdminOverview['recentSubmissions'][number]
+const results = ['AC', 'WA', 'WC', 'AE', 'LE', 'RE', 'TLE', 'Pending', 'SystemError']
+
+const metricLabels = [
+  ['users', '参加者', '人'],
+  ['problems', '公開問題', '問'],
+  ['submissions', '総提出', '件'],
+  ['pending', '判定待ち', '件'],
+  ['accepted', '正解', '件'],
+] as const
+
+export default function AdminPage() {
+  const { user, isAdmin } = useAuthContext()
+  const { data, error, isLoading, refresh } = useAdminOverview()
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState<'all' | 'pending' | 'error'>('all')
+  const [editing, setEditing] = useState<RecentSubmission | null>(null)
+  const [result, setResult] = useState('AC')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [saveError, setSaveError] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  const openEditor = (row: RecentSubmission) => {
+    setEditing(row)
+    setResult(row.result)
+    setErrorMessage(row.errorMessage)
+    setSaveError('')
+  }
+
+  const saveCorrection = async () => {
+    if (!editing) return
+    setSaving(true)
+    setSaveError('')
+    try {
+      await correctAdminJudgement(editing.id, result, errorMessage)
+      await refresh()
+      setEditing(null)
+    } catch {
+      setSaveError('修正を保存できませんでした。権限または接続を確認してください。')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const rows = useMemo(() => data?.recentSubmissions.filter((row) => {
+    const matchesQuery = `${row.id} ${row.userName} ${row.problemTitle}`
+      .toLocaleLowerCase().includes(query.toLocaleLowerCase())
+    const matchesFilter = filter === 'all' ||
+      (filter === 'pending' && row.result === 'Pending') ||
+      (filter === 'error' && ['AE', 'LE', 'RE', 'TLE', 'SystemError'].includes(row.result))
+    return matchesQuery && matchesFilter
+  }) ?? [], [data, query, filter])
+
+  return <>
+    <Head><title>管理画面 | HCCC</title></Head>
+    <BasicLayout>
+      <Box sx={{ pb: 10 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ sm: 'center' }} justifyContent='space-between' gap={2} sx={{ mb: 4 }}>
+          <Box>
+            <Stack direction='row' alignItems='center' spacing={1.5}>
+              <AdminPanelSettingsIcon color='primary' fontSize='large' />
+              <Typography variant='h4' fontWeight={800}>管理画面</Typography>
+            </Stack>
+            <Typography color='text.secondary' sx={{ mt: 1 }}>大会の状況と直近の判定を確認できます。</Typography>
+          </Box>
+          {isAdmin && <Button variant='outlined' startIcon={<RefreshIcon />} onClick={() => refresh()} sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}>更新する</Button>}
+        </Stack>
+
+        {!user && <Alert severity='info'>管理画面を見るには<Link href='/login'>ログイン</Link>してください。</Alert>}
+        {user && !isAdmin && <Alert severity='warning'>このアカウントには管理権限がありません。</Alert>}
+        {user && isAdmin && <>
+          {error && <Alert severity='error' sx={{ mb: 3 }}>データを取得できませんでした。接続と API の設定を確認してください。</Alert>}
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }, gap: 2, mb: 4 }}>
+            {metricLabels.map(([key, label, unit]) => <Paper key={key} variant='outlined' sx={{ p: 2.5, borderRadius: 3, bgcolor: key === 'pending' ? '#fff8ec' : 'background.paper' }}>
+              <Typography variant='body2' color='text.secondary'>{label}</Typography>
+              <Typography variant='h4' fontWeight={800} sx={{ mt: 1 }}>{isLoading ? <Skeleton width={70} /> : data?.[key] ?? '—'}<Typography component='span' variant='body2' sx={{ ml: 0.5 }}>{unit}</Typography></Typography>
+            </Paper>)}
+          </Box>
+
+          <Paper variant='outlined' sx={{ borderRadius: 3, overflow: 'hidden' }}>
+            <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
+              <Box><Typography variant='h6' fontWeight={700}>直近の提出</Typography><Typography variant='body2' color='text.secondary'>最新20件を15秒ごとに更新</Typography></Box>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                <TextField size='small' placeholder='ID・参加者・問題で検索' value={query} onChange={(event) => setQuery(event.target.value)} InputProps={{ startAdornment: <InputAdornment position='start'><SearchIcon fontSize='small' /></InputAdornment> }} />
+                <Stack direction='row' spacing={0.5}>{([['all', 'すべて'], ['pending', '判定待ち'], ['error', 'エラー']] as const).map(([value, label]) => <Button key={value} size='small' variant={filter === value ? 'contained' : 'outlined'} onClick={() => setFilter(value)}>{label}</Button>)}</Stack>
+              </Stack>
+            </Box>
+            <TableContainer><Table size='small'>
+              <TableHead sx={{ bgcolor: '#f6f8fb' }}><TableRow><TableCell>ID</TableCell><TableCell>参加者</TableCell><TableCell>問題</TableCell><TableCell>判定</TableCell><TableCell>提出日時</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
+              <TableBody>{rows.map((row) => <TableRow key={row.id} hover>
+                <TableCell><Link href={`/submissions/${row.id}`}>#{row.id}</Link></TableCell><TableCell>{row.userName}</TableCell><TableCell>{row.problemTitle}</TableCell>
+                <TableCell><Chip size='small' label={row.result} color={row.result === 'AC' ? 'success' : row.result === 'Pending' ? 'warning' : 'default'} /></TableCell>
+                <TableCell>{new Date(row.submittedAt).toLocaleString('ja-JP')}</TableCell>
+                <TableCell><Button size='small' onClick={() => openEditor(row)}>判定を修正</Button></TableCell>
+              </TableRow>)}</TableBody>
+            </Table></TableContainer>
+            {!isLoading && rows.length === 0 && <Typography color='text.secondary' align='center' sx={{ p: 4 }}>該当する提出はありません。</Typography>}
+          </Paper>
+          <Dialog open={Boolean(editing)} onClose={() => !saving && setEditing(null)} fullWidth maxWidth='sm'>
+            <DialogTitle>提出 #{editing?.id} の判定を修正</DialogTitle>
+            <DialogContent>
+              <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>{editing?.userName} · {editing?.problemTitle}</Typography>
+              <TextField select fullWidth label='判定結果' value={result} onChange={(event) => setResult(event.target.value)} sx={{ mb: 2 }}>
+                {results.map((value) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+              </TextField>
+              <TextField fullWidth multiline minRows={3} label='エラーメッセージ' value={errorMessage} onChange={(event) => setErrorMessage(event.target.value)} inputProps={{ maxLength: 10000 }} />
+              {saveError && <Alert severity='error' sx={{ mt: 2 }}>{saveError}</Alert>}
+            </DialogContent>
+            <DialogActions><Button disabled={saving} onClick={() => setEditing(null)}>キャンセル</Button><Button variant='contained' disabled={saving} onClick={saveCorrection}>保存する</Button></DialogActions>
+          </Dialog>
+        </>}
+      </Box>
+    </BasicLayout>
+  </>
+}
