@@ -105,7 +105,7 @@ const SubmitSection: FC<SubmitSectionProps> = ({
           <FormHelperText>{errors.arch?.message ?? ''}</FormHelperText>
         </FormControl>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', m: '4rem' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', m: '2rem' }}>
           <Button
             variant='contained'
             size='large'

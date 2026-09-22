@@ -26,17 +26,17 @@ const Home: NextPage = () => {
         <Container
           maxWidth='lg'
           sx={{
-            p: '2rem 0.5rem 10rem',
+            p: '2rem 0.5rem 4rem',
           }}
         >
-          <WhatHCCC sx={{ my: { xs: '4rem', md: '8rem' } }} />
-          <HCCCTarget sx={{ mb: { xs: '4rem', md: '8rem' } }} />
-          <RequestedAbility sx={{ mb: { xs: '4rem', md: '8rem' } }} />
-          <Schedule sx={{ m: '12rem 0' }} />
-          <JoinCondition sx={{ m: '4rem 0 6rem' }} />
+          <WhatHCCC sx={{ my: { xs: '2.5rem', md: '4rem' } }} />
+          <HCCCTarget sx={{ mb: { xs: '2.5rem', md: '4rem' } }} />
+          <RequestedAbility sx={{ mb: { xs: '2.5rem', md: '4rem' } }} />
+          <Schedule sx={{ m: '4rem 0' }} />
+          <JoinCondition sx={{ m: '3rem 0 4rem' }} />
           <Regulation />
-          <QandA sx={{ m: '10rem 0 3rem' }} />
-          <Links sx={{ m: '8rem 0 2rem' }} />
+          <QandA sx={{ m: '4rem 0 2rem' }} />
+          <Links sx={{ m: '4rem 0 2rem' }} />
         </Container>
       </BasicLayout>
     </>

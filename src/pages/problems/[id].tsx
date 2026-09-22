@@ -110,28 +110,28 @@ const Problem = () => {
             TimeLimit 2sec / Score {problem.score}
           </Typography>
 
-          <Box sx={{ m: '5rem 0 10rem' }}>
+          <Box sx={{ m: '2rem 0 3rem' }}>
             <TitleLabel label='Problem' sx={{ mb: '2rem' }} />
             <Typography variant='h6' sx={{ p: '1rem' }}>
               {problem.statement}
             </Typography>
           </Box>
 
-          <Box sx={{ m: '10rem 0' }}>
+          <Box sx={{ m: '3rem 0' }}>
             <TitleLabel label='Source Code' sx={{ mb: '2rem' }} />
             <Box sx={{ fontSize: '1.2rem' }}>
               <Code language='c'>{problem.code}</Code>
             </Box>
           </Box>
 
-          <Box sx={{ m: '10rem 0' }}>
+          <Box sx={{ m: '3rem 0' }}>
             <TitleLabel label='Input' sx={{ mb: '2rem' }} />
             <Typography variant='h6' sx={{ p: '1rem' }}>
               {problem.input_desc}
             </Typography>
           </Box>
 
-          <Box sx={{ m: '10rem 0' }}>
+          <Box sx={{ m: '3rem 0' }}>
             <TitleLabel label='Output' sx={{ mb: '2rem' }} />
             <Typography variant='h6'>{problem.output_desc}</Typography>
           </Box>
@@ -139,7 +139,7 @@ const Problem = () => {
           <SubmitSection
             onSubmit={onSubmit}
             errorMessage={errorMessage}
-            sx={{ m: '10rem 0' }}
+            sx={{ m: '3rem 0' }}
           />
         </Box>
       )}
