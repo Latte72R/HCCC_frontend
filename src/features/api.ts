@@ -101,6 +101,7 @@ export const usePublicContestPeriod = () => {
   return {
     begin: new Date(begin),
     end: new Date(end),
+    eventName: data?.eventName || '',
     isLoading: !error && !data,
   }
 }
@@ -108,10 +109,11 @@ export const usePublicContestPeriod = () => {
 export const updateContestPeriod = async (
   begin: string,
   end: string,
+  eventName: string,
 ): Promise<ResponseBase> => Fetcher('/api/admin/contest', {
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ begin, end }),
+  body: JSON.stringify({ begin, end, eventName }),
 })
 
 export const useAdminProblems = () => {

@@ -37,6 +37,7 @@ export type AdminOverview = {
 export type ContestPeriod = {
   begin: string
   end: string
+  eventName: string
 }
 
 export type AdminTestcase = {

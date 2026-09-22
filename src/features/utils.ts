@@ -37,3 +37,13 @@ export const formatMillSeconds = (format: string, millSeconds: number) => {
 export const equalDateTime = (d1: Date, d2: Date) => {
   return Math.floor(d1.getTime() / 1000) === Math.floor(d2.getTime() / 1000)
 }
+
+const weekdays = ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.']
+
+/* 大会期間の表示用: 2026 9.1 (Mon.) 00:00 〜 9.30 (Tue.) 18:00 */
+export const formatPeriodRange = (begin: Date, end: Date) => {
+  const date = (d: Date, withYear: boolean) =>
+    `${withYear ? `${d.getFullYear()} ` : ''}${d.getMonth() + 1}.${d.getDate()} (${weekdays[d.getDay()]}) ` +
+    `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  return `${date(begin, true)} 〜 ${date(end, false)}`
+}

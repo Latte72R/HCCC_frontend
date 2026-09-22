@@ -85,7 +85,8 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                     に則る ．
                   </li>
                   <li>
-                    ABIの仕様は
+                    対象アーキテクチャは提出時に x86-64 / RISC-V から選択する．
+                    x86-64 の場合は
                     <Link
                       href='https://uclibc.org/docs/psABI-x86_64.pdf'
                       target='_blank'
@@ -100,11 +101,24 @@ const Regulation: FC<RegulationProps> = ({ sx }) => {
                     >
                       System V Application Binary Interface
                     </Link>
-                    の仕様に従う．
+                    に従い，記法は AT&amp;T と Intel の双方を許可する．
+                    RISC-V の場合は
+                    <Link
+                      href='https://github.com/riscv-non-isa/riscv-elf-psABI-doc'
+                      target='_blank'
+                      sx={{
+                        color: '#ffab91',
+                        textDecoration: 'none',
+                        '&:hover': {
+                          color: '#1b5e20',
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      RISC-V ELF psABI
+                    </Link>
+                    に従う．いずれもアセンブラには GNU assembler を使用する．
                   </li>
-                  <li>対象アーキテクチャはx86_64とする．</li>
-                  <li>記法はAT&amp;Tとintel記法の双方を許可する．</li>
-                  <li>アセンブラにはGNU assemblerを使用する</li>
                 </ol>
               </li>
               <li>

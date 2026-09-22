@@ -2,12 +2,15 @@ import { Box, Typography } from '@mui/material'
 import type { SxProps, Theme } from '@mui/material/styles'
 import Image from 'next/image'
 import { FC } from 'react'
+import { usePublicContestPeriod } from '@/features/api'
+import { formatPeriodRange } from '@/features/utils'
 
 type MainVisualProps = {
   sx?: SxProps<Theme>
 }
 
 const MainVisual: FC<MainVisualProps> = ({ sx }) => {
+  const { begin, end, eventName } = usePublicContestPeriod()
   return (
     <Box
       sx={{
@@ -63,20 +66,22 @@ const MainVisual: FC<MainVisualProps> = ({ sx }) => {
               maxWidth: '600px',
             }}
           >
-            Day: 2025 9.14 (Sun.) 12:00 〜 9.16 (Tue.) 12:00
+            Day: {formatPeriodRange(begin, end)}
           </Typography>
-          <Typography
-            variant='h6'
-            component='div'
-            align='center'
-            sx={{
-              fontWeight: '700',
-              pt: '0.5rem',
-              maxWidth: '600px',
-            }}
-          >
-            For KCS Summer Camp 2025
-          </Typography>
+          {eventName && (
+            <Typography
+              variant='h6'
+              component='div'
+              align='center'
+              sx={{
+                fontWeight: '700',
+                pt: '0.5rem',
+                maxWidth: '600px',
+              }}
+            >
+              For {eventName}
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>

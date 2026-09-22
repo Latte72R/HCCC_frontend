@@ -41,6 +41,7 @@ export default function AdminPage() {
   const { data: period, refresh: refreshPeriod } = useContestPeriod()
   const [beginInput, setBeginInput] = useState('')
   const [endInput, setEndInput] = useState('')
+  const [eventInput, setEventInput] = useState('')
   const [periodError, setPeriodError] = useState('')
   const [periodSaving, setPeriodSaving] = useState(false)
   const [periodSaved, setPeriodSaved] = useState(false)
@@ -65,6 +66,7 @@ export default function AdminPage() {
 
   const beginValue = beginInput || (period ? toLocalInputValue(period.begin) : '')
   const endValue = endInput || (period ? toLocalInputValue(period.end) : '')
+  const eventValue = eventInput || period?.eventName || ''
 
   const savePeriod = async () => {
     setPeriodSaving(true)
@@ -81,10 +83,15 @@ export default function AdminPage() {
         setPeriodError('終了は開始より後にしてください。')
         return
       }
-      await updateContestPeriod(begin.toISOString(), end.toISOString())
+      if (!eventValue.trim() || eventValue.length > 200) {
+        setPeriodError('イベント名を1〜200文字で入力してください。')
+        return
+      }
+      await updateContestPeriod(begin.toISOString(), end.toISOString(), eventValue.trim())
       await refreshPeriodAndOverview()
       setBeginInput(toLocalInputValue(begin.toISOString()))
       setEndInput(toLocalInputValue(end.toISOString()))
+      setEventInput(eventValue.trim())
       setPeriodSaved(true)
     } catch {
       setPeriodError('保存できませんでした。権限または接続を確認してください。')
@@ -151,10 +158,11 @@ export default function AdminPage() {
           <Paper variant='outlined' sx={{ p: 3, borderRadius: 3, mb: 4 }}>
             <Typography variant='h6' fontWeight={700}>大会期間</Typography>
             <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
-              現在: {period ? `${new Date(period.begin).toLocaleString('ja-JP')} 〜 ${new Date(period.end).toLocaleString('ja-JP')}` : '取得中…'}
-             （問題公開・提出制限の判定に使われます）
+              現在: {period ? `${new Date(period.begin).toLocaleString('ja-JP')} 〜 ${new Date(period.end).toLocaleString('ja-JP')}（{period.eventName}）` : '取得中…'}
+             （問題公開・提出制限・トップ表示の判定に使われます）
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'flex-end' }}>
+              <TextField size='small' label='イベント名' value={eventValue} onChange={(event) => setEventInput(event.target.value)} sx={{ minWidth: 200 }} />
               <TextField size='small' type='datetime-local' label='開始' value={beginValue} onChange={(event) => setBeginInput(event.target.value)} InputLabelProps={{ shrink: true }} />
               <TextField size='small' type='datetime-local' label='終了' value={endValue} onChange={(event) => setEndInput(event.target.value)} InputLabelProps={{ shrink: true }} />
               <Button variant='contained' disabled={periodSaving} onClick={savePeriod}>期間を保存</Button>
