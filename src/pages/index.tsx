@@ -8,7 +8,6 @@ import Links from '@/components/organisms/home/Links'
 import MainVisual from '@/components/organisms/home/MainVisual'
 import QandA from '@/components/organisms/home/QandA'
 import Regulation from '@/components/organisms/home/Regulation'
-import RequestedAbility from '@/components/organisms/home/RequestedAbility'
 import Schedule from '@/components/organisms/home/Schedule'
 import WhatHCCC from '@/components/organisms/home/WhatHCCC'
 import BasicLayout from '@/components/templates/BasicLayout'
@@ -31,7 +30,6 @@ const Home: NextPage = () => {
         >
           <WhatHCCC sx={{ my: { xs: '2.5rem', md: '4rem' } }} />
           <HCCCTarget sx={{ mb: { xs: '2.5rem', md: '4rem' } }} />
-          <RequestedAbility sx={{ mb: { xs: '2.5rem', md: '4rem' } }} />
           <Schedule sx={{ m: '4rem 0' }} />
           <JoinCondition sx={{ m: '3rem 0 4rem' }} />
           <Regulation />
