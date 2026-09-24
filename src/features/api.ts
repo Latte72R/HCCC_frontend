@@ -82,6 +82,12 @@ export const correctAdminJudgement = async (
   body: JSON.stringify({ result, errorMessage }),
 })
 
+export const rejudgeAdminSubmission = async (id: number): Promise<ResponseBase> =>
+  Fetcher(`/api/admin/submissions/${id}/rejudge`, { method: 'POST' })
+
+export const deleteAdminSubmission = async (id: number): Promise<ResponseBase> =>
+  Fetcher(`/api/admin/submissions/${id}`, { method: 'DELETE' })
+
 export const useContestPeriod = () => {
   const { data, error, isLoading, mutate } = useSWR<ContestPeriod, NetworkError>(
     '/api/admin/contest',
