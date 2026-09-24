@@ -214,6 +214,7 @@ export const useRanking = () => {
   const { data, error } = useSWR<RankingResponse, NetworkError>(
     `/api/ranking`,
     Fetcher,
+    { refreshInterval: 15000 },
   )
 
   return {
