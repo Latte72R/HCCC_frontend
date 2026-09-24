@@ -43,7 +43,8 @@ const metricLabels = [
 
 export default function AdminPage() {
   const { user, isAdmin } = useAuthContext()
-  const { data, error, isLoading, refresh } = useAdminOverview()
+  const [submissionPage, setSubmissionPage] = useState(0)
+  const { data, error, isLoading, refresh } = useAdminOverview(submissionPage * 20)
   const [tab, setTab] = useState(0)
   const { data: period, refresh: refreshPeriod } = useContestPeriod()
   const [beginInput, setBeginInput] = useState('')
@@ -248,6 +249,29 @@ export default function AdminPage() {
               </TableRow>)}</TableBody>
             </Table></TableContainer>
             {!isLoading && rows.length === 0 && <Typography color='text.secondary' align='center' sx={{ p: 4 }}>該当する提出はありません。</Typography>}
+            <Stack direction='row' justifyContent='flex-end' alignItems='center' spacing={1} sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ mr: 1 }}>
+                {data && data.submissions > 0
+                  ? `${submissionPage * 20 + 1}–${Math.min((submissionPage + 1) * 20, data.submissions)} / ${data.submissions}件`
+                  : '0件'}
+              </Typography>
+              <Button
+                size='small'
+                variant='outlined'
+                disabled={submissionPage === 0}
+                onClick={() => setSubmissionPage((page) => Math.max(0, page - 1))}
+              >
+                前の20件
+              </Button>
+              <Button
+                size='small'
+                variant='outlined'
+                disabled={!data || (submissionPage + 1) * 20 >= data.submissions}
+                onClick={() => setSubmissionPage((page) => page + 1)}
+              >
+                次の20件
+              </Button>
+            </Stack>
           </Paper>
           </>}
           {tab === 1 && <ProblemManager />}
