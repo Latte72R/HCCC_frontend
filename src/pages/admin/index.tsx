@@ -14,7 +14,14 @@ import AppLink from '@/components/atoms/AppLink'
 import { useAuthContext } from '@/components/contexts/AuthProvider'
 import ProblemManager from '@/components/organisms/admin/ProblemManager'
 import BasicLayout from '@/components/templates/BasicLayout'
-import { correctAdminJudgement, updateContestPeriod, useAdminOverview, useContestPeriod } from '@/features/api'
+import {
+  correctAdminJudgement,
+  deleteAdminSubmission,
+  rejudgeAdminSubmission,
+  updateContestPeriod,
+  useAdminOverview,
+  useContestPeriod,
+} from '@/features/api'
 import { AdminOverview } from '@/features/types'
 
 type RecentSubmission = AdminOverview['recentSubmissions'][number]
@@ -52,6 +59,10 @@ export default function AdminPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [saveError, setSaveError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [rejudging, setRejudging] = useState<RecentSubmission | null>(null)
+  const [deleting, setDeleting] = useState<RecentSubmission | null>(null)
+  const [actionError, setActionError] = useState('')
+  const [acting, setActing] = useState(false)
 
   const openEditor = (row: RecentSubmission) => {
     setEditing(row)
@@ -112,6 +123,36 @@ export default function AdminPage() {
       setSaveError('修正を保存できませんでした。権限または接続を確認してください。')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const runRejudge = async () => {
+    if (!rejudging) return
+    setActing(true)
+    setActionError('')
+    try {
+      await rejudgeAdminSubmission(rejudging.id)
+      await refresh()
+      setRejudging(null)
+    } catch {
+      setActionError('再判定を開始できませんでした。判定中の提出でないか確認してください。')
+    } finally {
+      setActing(false)
+    }
+  }
+
+  const runDelete = async () => {
+    if (!deleting) return
+    setActing(true)
+    setActionError('')
+    try {
+      await deleteAdminSubmission(deleting.id)
+      await refresh()
+      setDeleting(null)
+    } catch {
+      setActionError('提出を削除できませんでした。権限または接続を確認してください。')
+    } finally {
+      setActing(false)
     }
   }
 
@@ -185,7 +226,25 @@ export default function AdminPage() {
                 <TableCell><AppLink href={`/submissions/${row.id}`}>#{row.id}</AppLink></TableCell><TableCell>{row.userName}</TableCell><TableCell><AppLink href={`/problems/${row.problemId}`}>#{row.problemId} {row.problemTitle}</AppLink></TableCell>
                 <TableCell><Chip size='small' label={row.result} color={row.result === 'AC' ? 'success' : row.result === 'Pending' ? 'warning' : 'default'} /></TableCell>
                 <TableCell>{new Date(row.submittedAt).toLocaleString('ja-JP')}</TableCell>
-                <TableCell><Button size='small' onClick={() => openEditor(row)}>判定を修正</Button></TableCell>
+                <TableCell>
+                  <Stack direction='row' spacing={0.5} flexWrap='wrap' useFlexGap>
+                    <Button size='small' onClick={() => openEditor(row)}>判定を修正</Button>
+                    <Button
+                      size='small'
+                      disabled={row.result === 'Pending'}
+                      onClick={() => { setActionError(''); setRejudging(row) }}
+                    >
+                      再判定
+                    </Button>
+                    <Button
+                      size='small'
+                      color='error'
+                      onClick={() => { setActionError(''); setDeleting(row) }}
+                    >
+                      削除
+                    </Button>
+                  </Stack>
+                </TableCell>
               </TableRow>)}</TableBody>
             </Table></TableContainer>
             {!isLoading && rows.length === 0 && <Typography color='text.secondary' align='center' sx={{ p: 4 }}>該当する提出はありません。</Typography>}
@@ -203,6 +262,32 @@ export default function AdminPage() {
               {saveError && <Alert severity='error' sx={{ mt: 2 }}>{saveError}</Alert>}
             </DialogContent>
             <DialogActions><Button disabled={saving} onClick={() => setEditing(null)}>キャンセル</Button><Button variant='contained' disabled={saving} onClick={saveCorrection}>保存する</Button></DialogActions>
+          </Dialog>
+          <Dialog open={Boolean(rejudging)} onClose={() => !acting && setRejudging(null)} fullWidth maxWidth='sm'>
+            <DialogTitle>提出 #{rejudging?.id} を再判定</DialogTitle>
+            <DialogContent>
+              <Typography>
+                現在の判定結果を破棄して Pending に戻し，judge に再投入します。
+              </Typography>
+              {actionError && <Alert severity='error' sx={{ mt: 2 }}>{actionError}</Alert>}
+            </DialogContent>
+            <DialogActions>
+              <Button disabled={acting} onClick={() => setRejudging(null)}>キャンセル</Button>
+              <Button variant='contained' disabled={acting} onClick={runRejudge}>再判定する</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={Boolean(deleting)} onClose={() => !acting && setDeleting(null)} fullWidth maxWidth='sm'>
+            <DialogTitle>提出 #{deleting?.id} を削除</DialogTitle>
+            <DialogContent>
+              <Alert severity='warning'>
+                この提出記録と関連する判定修正履歴を完全に削除します。この操作は取り消せません。
+              </Alert>
+              {actionError && <Alert severity='error' sx={{ mt: 2 }}>{actionError}</Alert>}
+            </DialogContent>
+            <DialogActions>
+              <Button disabled={acting} onClick={() => setDeleting(null)}>キャンセル</Button>
+              <Button color='error' variant='contained' disabled={acting} onClick={runDelete}>削除する</Button>
+            </DialogActions>
           </Dialog>
         </>}
       </Box>
