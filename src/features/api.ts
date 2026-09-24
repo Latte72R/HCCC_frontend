@@ -67,7 +67,7 @@ export const useAdminOverview = (offset = 0) => {
   const { data, error, isLoading, mutate } = useSWR<AdminOverview, NetworkError>(
     `/api/admin/overview?offset=${offset}`,
     Fetcher,
-    { refreshInterval: 15000 },
+    { refreshInterval: offset === 0 ? 15000 : 0 },
   )
   return { data, error, isLoading, refresh: mutate }
 }
