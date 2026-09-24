@@ -215,7 +215,7 @@ export default function AdminPage() {
 
           <Paper variant='outlined' sx={{ borderRadius: 3, overflow: 'hidden' }}>
             <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'stretch', md: 'center' }, flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
-              <Box><Typography variant='h6' fontWeight={700}>直近の提出</Typography><Typography variant='body2' color='text.secondary'>最新20件を15秒ごとに更新</Typography></Box>
+              <Box><Typography variant='h6' fontWeight={700}>直近の提出</Typography><Typography variant='body2' color='text.secondary'>{submissionPage === 0 ? '最新20件を15秒ごとに更新' : `${submissionPage * 20 + 1}件目以降を表示`}</Typography></Box>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                 <TextField size='small' placeholder='ID・参加者・問題で検索' value={query} onChange={(event) => setQuery(event.target.value)} InputProps={{ startAdornment: <InputAdornment position='start'><SearchIcon fontSize='small' /></InputAdornment> }} />
                 <Stack direction='row' spacing={0.5}>{([['all', 'すべて'], ['pending', '判定待ち'], ['error', 'エラー']] as const).map(([value, label]) => <Button key={value} size='small' variant={filter === value ? 'contained' : 'outlined'} onClick={() => setFilter(value)}>{label}</Button>)}</Stack>
