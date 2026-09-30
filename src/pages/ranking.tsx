@@ -1,5 +1,5 @@
 import StarIcon from '@mui/icons-material/Star'
-import { Alert, Typography } from '@mui/material'
+import { Alert, Checkbox, FormControlLabel, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import Error from 'next/error'
 import Head from 'next/head'
@@ -12,7 +12,8 @@ import BasicLayout from '@/components/templates/BasicLayout'
 import { useRanking, usePublicContestPeriod } from '@/features/api'
 
 const Ranking: NextPage = () => {
-  const { rankingResponse, isError } = useRanking()
+  const [includeAfterContest, setIncludeAfterContest] = useState(false)
+  const { rankingResponse, isError } = useRanking(includeAfterContest)
   const { end } = usePublicContestPeriod()
   const [now, setNow] = useState(new Date())
 
@@ -55,9 +56,21 @@ const Ranking: NextPage = () => {
         </TextWithIcon>
 
         {now > end && (
-          <Alert severity='info' sx={{ m: '2rem 0' }}>
-            コンテストは終了しました。
-          </Alert>
+          <>
+            <Alert severity='info' sx={{ m: '2rem 0 1rem' }}>
+              コンテストは終了しました。
+            </Alert>
+            <FormControlLabel
+              control={(
+                <Checkbox
+                  checked={includeAfterContest}
+                  onChange={(e) => setIncludeAfterContest(e.target.checked)}
+                />
+              )}
+              label='Include submissions after contest'
+              sx={{ mb: '1rem' }}
+            />
+          </>
         )}
 
         <RankingTable rankingList={rankingList} />

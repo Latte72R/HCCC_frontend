@@ -210,9 +210,10 @@ export const useSubmission = (id: number, options?: any) => {
   }
 }
 
-export const useRanking = () => {
+export const useRanking = (includeAfterContest = false) => {
+  const query = includeAfterContest ? '?include_after_contest=true' : ''
   const { data, error } = useSWR<RankingResponse, NetworkError>(
-    `/api/ranking`,
+    `/api/ranking${query}`,
     Fetcher,
   )
 
