@@ -172,7 +172,7 @@ export default function ProblemManager() {
               ? <Typography variant='body2' color='text.secondary'>判定方式が NoTestCase のためテストケースは不要です。</Typography>
               : input.testcases.map((t, i) => <Stack key={i} direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }}>
                 <TextField size='small' fullWidth multiline minRows={2} label={`入力 #${i + 1}`} value={t.input ?? ''} onChange={(e) => set('testcases', input.testcases.map((c, j) => j === i ? { ...c, input: e.target.value } : c))} />
-                <TextField size='small' fullWidth label={`期待値 #${i + 1}`} value={t.expect ?? ''} onChange={(e) => set('testcases', input.testcases.map((c, j) => j === i ? { ...c, expect: e.target.value } : c))} />
+                <TextField size='small' fullWidth multiline minRows={2} label={`期待値 #${i + 1}`} value={t.expect ?? ''} onChange={(e) => set('testcases', input.testcases.map((c, j) => j === i ? { ...c, expect: e.target.value } : c))} />
                 <IconButton size='small' onClick={() => set('testcases', input.testcases.filter((_, j) => j !== i))} aria-label='ケース削除'><DeleteIcon fontSize='small' /></IconButton>
               </Stack>)}
           </Box>
